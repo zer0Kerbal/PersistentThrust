@@ -6,11 +6,13 @@ using UnityEngine;
 
 namespace PersistentThrust {
     
-    public class PersistentEngine : ModuleEnginesFX {
+    public class PersistentEngine : PartModule {
 
 	// Flag to activate force if it isn't to allow overriding stage activation
 	[KSPField(isPersistant = true)]
 	bool IsForceActivated;
+	// Flag if using PersistentEngine features
+	public bool IsPersistentEngine = false;
 	// Flag whether to request massless resources
 	public bool RequestPropMassless = false;
 	// Flag whether to request resources with mass
@@ -26,6 +28,10 @@ namespace PersistentThrust {
 	// Throttle
 	[KSPField(guiActive = true, guiName = "Throttle")]
 	protected string Throttle = "";
+
+	// Engine module on the same part
+	public ModuleEngines engine;
+	ModuleEnginesFX engineFX;
 	
 	// Numeric display values
 	protected double thrust_d = 0;
@@ -45,30 +51,48 @@ namespace PersistentThrust {
 	// Average density of propellants
 	public double densityAverage;
 
+	// Make "engine" and "engineFX" fields refer to the ModuleEngines and ModuleEnginesFX modules in part.Modules
+	void FindModuleEngines () {
+	    foreach (PartModule pm in part.Modules) {
+		if (pm is ModuleEngines) {
+		    engine = pm as ModuleEngines;
+		    IsPersistentEngine = true;
+		} else {
+		    Debug.Log("No ModuleEngine found.");
+		}
+		if (pm is ModuleEnginesFX) {
+		    engineFX = pm as ModuleEnginesFX;
+		}
+	    }
+	}
+	
 	// Update
 	public override void OnUpdate() {
 
-	    // When transitioning from timewarp to real update throttle
-	    if (warpToReal) {
-		vessel.ctrlState.mainThrottle = ThrottlePersistent;
-		warpToReal = false;
-	    }
-	    
-	    // Persistent thrust GUI
-	    Fields["Thrust"].guiActive = isEnabled;
-	    Fields["Isp"].guiActive = isEnabled;
-	    Fields["Throttle"].guiActive = isEnabled;
+	    if (IsPersistentEngine) {
 
-	    // Update display values
-	    Thrust = Utils.FormatThrust(thrust_d);
-	    Isp = Math.Round(isp_d, 2).ToString() + " s";
-	    Throttle = Math.Round(throttle_d * 100).ToString() + "%";
-
-	    // Activate force if engine is enabled and operational
-	    if (!IsForceActivated && isEnabled && isOperational)
-	    {
-		IsForceActivated = true;
-		part.force_activate();
+		// When transitioning from timewarp to real update throttle
+		if (warpToReal) {
+		    vessel.ctrlState.mainThrottle = ThrottlePersistent;
+		    warpToReal = false;
+		}
+		
+		// Persistent thrust GUI
+		Fields["Thrust"].guiActive = isEnabled;
+		Fields["Isp"].guiActive = isEnabled;
+		Fields["Throttle"].guiActive = isEnabled;
+		
+		// Update display values
+		Thrust = Utils.FormatThrust(thrust_d);
+		Isp = Math.Round(isp_d, 2).ToString() + " s";
+		Throttle = Math.Round(throttle_d * 100).ToString() + "%";
+		
+		// Activate force if engine is enabled and operational
+		if (!IsForceActivated && engine.isEnabled && engine.isOperational)
+		{
+		    IsForceActivated = true;
+		    part.force_activate();
+		}
 	    }
 	}
 
@@ -78,23 +102,29 @@ namespace PersistentThrust {
 	    // Run base OnLoad method
 	    base.OnLoad(node);
 
-	    // Initialize PersistentPropellant list
-	    pplist = PersistentPropellant.MakeList(propellants);
+	    // Populate engine and engineFX fields
+	    FindModuleEngines();
 
-	    // Initialize density of propellant used in deltaV and mass calculations
-	    densityAverage = pplist.AverageDensity();
+	    if (IsPersistentEngine) {
+	    
+		// Initialize PersistentPropellant list
+		pplist = PersistentPropellant.MakeList(engine.propellants);
+		
+		// Initialize density of propellant used in deltaV and mass calculations
+		densityAverage = pplist.AverageDensity();
+	    }
 	}
 
 	void UpdatePersistentParameters () {
 	    // Update values to use during timewarp
 	    // Update thrust calculation
-	    this.CalculateThrust();
+	    engine.CalculateThrust();
 	    // Get Isp
-	    IspPersistent = realIsp;
+	    IspPersistent = engine.realIsp;
 	    // Get throttle
 	    ThrottlePersistent = vessel.ctrlState.mainThrottle;
 	    // Get final thrust
-	    ThrustPersistent = this.finalThrust;
+	    ThrustPersistent = engine.finalThrust;
 	}
 
 	// Calculate demands of each resource
@@ -155,7 +185,7 @@ namespace PersistentThrust {
 
 	// Physics update
 	public override void OnFixedUpdate() {
-	    if (FlightGlobals.fetch != null && isEnabled) {
+	    if (IsPersistentEngine && FlightGlobals.fetch != null && isEnabled) {
 		// Time step size
 		var dT = TimeWarp.fixedDeltaTime;
 		
