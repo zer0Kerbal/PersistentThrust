@@ -1,0 +1,2 @@
+C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust\obj\Debug\PersistentThrust.csprojAssemblyReference.cache
+C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust\obj\Debug\PersistentThrust.csproj.CoreCompileInputs.cache

@@ -1,0 +1,99 @@
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{15E1F3A2-5D86-4E1B-A7F8-5A37FA72F6F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>PersistentThrust</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>PersistentThrust</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- <Reference Include="Microsoft.CSharp" /> -->
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(DevDir)\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(DevDir)\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(DevDir)\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(DevDir)\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>  <ItemGroup>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="PersistentEngine.cs" />
+    <Compile Include="Propellant.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolarSailPart.cs" />
+    <Compile Include="Utils.cs" />
+    <EmbeddedResource Include="Properties\PersistentThrust.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\TextTemplate1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TextTemplate1.txt</LastGenOutput>
+    </Content>
+    <Content Include="Properties\TextTemplate1.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+		<!-- "C:\KSP_DEV\Workspace\pdb2mdb.exe" "C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust\bin\Release\PersistentThrust.dll"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust\bin\Release\PersistentThrust.dll" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust\Plugins"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust\bin\Release\PersistentThrust.dll.mdb" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust\Plugins"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\KerbalChangelog.cfg" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\license.md" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\PersistentThrust.version" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust"
+		xcopy /Y "C:\KSP_DEV\Workspace\PersistentThrust\readme.md" "C:\KSP_DEV\Workspace\PersistentThrust\GameData\PersistentThrust" -->
+</PostBuildEvent>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
