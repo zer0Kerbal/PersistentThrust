@@ -1,4 +1,4 @@
-* PersistentThrust Restored and Revectored
+# PersistentThrust Restored and Revectored 
 A plugin for [[http://www.kerbalspaceprogram.com][Kerbal Space Program]] to allow low thrust propulsion
 systems like ion engines and solar sails to operate during time warp.
 ** Requirements
